@@ -75,6 +75,10 @@
     #about .split-image {
         padding-left: 0;
     }
+
+    .split-image {
+        margin-top: var(--spacing-lg);
+    }
 }
 
 /* Default Desktop sizing for form-wrapper */
