@@ -72,6 +72,11 @@
         grid-template-columns: 1fr;
     }
 
+    .split-layout.reverse {
+        direction: ltr;
+        text-align: left;
+    }
+
     #about .split-image {
         padding-left: 0;
     }
