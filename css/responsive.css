@@ -5,6 +5,11 @@
         --spacing-xl: 5rem;
     }
 
+    body {
+        overflow-x: hidden;
+        /* Prevent any horizontal scroll on mobile */
+    }
+
     .hero-content h1 {
         font-size: 2.5rem;
     }
@@ -67,22 +72,28 @@
         /* Scale down slightly for a neat single row */
     }
 
-    /* Override split layouts to stack on mobile */
-    .split-layout {
-        grid-template-columns: 1fr;
-    }
-
+    /* Override split layouts to stack on mobile - use flexbox with order for clean stacking */
+    .split-layout,
     .split-layout.reverse {
+        display: flex;
+        flex-direction: column;
         direction: ltr;
         text-align: left;
     }
 
-    #about .split-image {
+    /* Always show image BELOW text on mobile regardless of desktop layout */
+    .split-layout .split-content {
+        order: 1;
+    }
+
+    .split-layout .split-image {
+        order: 2;
+        margin-top: var(--spacing-lg);
         padding-left: 0;
     }
 
-    .split-image {
-        margin-top: var(--spacing-lg);
+    #about .split-image {
+        padding-left: 0;
     }
 }
 
