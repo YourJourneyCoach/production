@@ -28,6 +28,9 @@
     <link rel="stylesheet" href="css/variables.css?v=6">
     <link rel="stylesheet" href="css/style.css?v=6">
     <link rel="stylesheet" href="css/responsive.css?v=6">
+
+    <!-- Netlify Identity Widget -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 
 <body>
@@ -422,6 +425,19 @@
     </footer>
 
     <script src="js/main.js"></script>
+
+    <!-- Netlify Identity Login Redirect -->
+    <script>
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("init", user => {
+                if (!user) {
+                    window.netlifyIdentity.on("login", () => {
+                        document.location.href = "/admin/";
+                    });
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
