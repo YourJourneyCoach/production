@@ -2,6 +2,8 @@ backend:
   name: git-gateway
   branch: main # Branch to update (optional; defaults to master)
 
+local_backend: true # Allows testing the CMS locally without hitting Netlify/GitHub
+
 media_folder: "assets/images" # Media files will be stored in the repo under assets/images
 public_folder: "/assets/images" # Absolute path so image URLs work correctly across all pages
 

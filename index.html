@@ -285,7 +285,9 @@
 
             <div class="fade-in-scroll form-wrapper"
                 style="width: 100%; max-width: 500px; margin: 1rem auto; padding: 0 1rem;">
-                <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="custom-form">
+                <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field"
+                    action="/success.html" class="custom-form">
+                    <input type="hidden" name="form-name" value="contact" />
                     <p class="hidden" style="display: none;">
                         <label>
                             Don't fill this out if you're human: <input name="bot-field" />
