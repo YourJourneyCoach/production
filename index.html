@@ -428,6 +428,11 @@
 
     <!-- Netlify Identity Login Redirect -->
     <script>
+        // Check for Netlify Identity tokens in the URL hash and redirect to admin page
+        if (window.location.hash.includes('_token=')) {
+            window.location.replace('/admin/' + window.location.hash);
+        }
+
         if (window.netlifyIdentity) {
             window.netlifyIdentity.on("init", user => {
                 if (!user) {
