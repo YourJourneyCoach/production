@@ -30,12 +30,9 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
-            <a href="index.html" class="logo">Your Journey Coach</a>
-            <ul class="nav-links">
-                <li><a href="enneagram.html" class="active" style="color: var(--color-accent-gold);">Enneagram</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="index.html#about">About</a></li>
-                <li><a href="index.html#contact" class="btn-primary">Let's Talk</a></li>
+            <a href="index.html" class="logo" id="nav-logo">Your Journey Coach</a>
+            <ul class="nav-links" id="nav-links-list">
+                <!-- Populated dynamically by js/nav.js from data/nav.json -->
             </ul>
             <div class="hamburger">
                 <span></span>
@@ -192,6 +189,7 @@
         </div>
     </footer>
 
+    <script src="js/nav.js"></script>
     <script src="js/main.js"></script>
 </body>
 

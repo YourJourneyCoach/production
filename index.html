@@ -42,13 +42,9 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
-            <a href="index.html" class="logo">Your Journey Coach</a> <!-- Initials or Name -->
-            <ul class="nav-links">
-                <li><a href="enneagram.html">Enneagram</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="#about">About</a></li>
-
-                <li><a href="#contact" class="btn-primary">Let's Talk</a></li>
+            <a href="index.html" class="logo" id="nav-logo">Your Journey Coach</a>
+            <ul class="nav-links" id="nav-links-list">
+                <!-- Populated dynamically by js/nav.js from data/nav.json -->
             </ul>
             <div class="hamburger">
                 <span></span>
@@ -398,6 +394,7 @@
         </div>
     </footer>
 
+    <script src="js/nav.js"></script>
     <script src="js/main.js"></script>
 
     <!-- Netlify Identity Login Redirect -->
