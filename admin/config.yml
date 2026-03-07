@@ -18,10 +18,31 @@ collections:
           - {label: "Hero Subheading", name: "hero_subheading", widget: "string"}
   - name: "testimonials"
     label: "Testimonials"
-    folder: "_testimonials" # Placeholder for future dynamic content
-    create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    fields:
-      - {label: "Quote", name: "title", widget: "string"}
-      - {label: "Author", name: "author", widget: "string"}
-      - {label: "Body", name: "body", widget: "markdown"}
+    files:
+      - file: "data/testimonials.json"
+        label: "Testimonials List"
+        name: "testimonials_list"
+        fields:
+          - label: "Testimonials"
+            name: "testimonials"
+            widget: "list"
+            fields:
+              - {label: "Quote", name: "quote", widget: "string"}
+              - {label: "Author", name: "author", widget: "string"}
+  - name: "blog"
+    label: "Blog Posts"
+    files:
+      - file: "data/posts.json"
+        label: "Blog Posts List"
+        name: "posts_list"
+        fields:
+          - label: "Posts"
+            name: "posts"
+            widget: "list"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Date", name: "date", widget: "datetime"}
+              - {label: "Author", name: "author", widget: "string", default: "John Paine"}
+              - {label: "Featured Image", name: "image", widget: "image", required: false}
+              - {label: "Summary", name: "summary", widget: "text", required: false}
+              - {label: "Body", name: "body", widget: "markdown"}

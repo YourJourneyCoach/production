@@ -61,4 +61,60 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // 5. Dynamic Testimonials Rotation
+    const testimonialsContainer = document.getElementById('testimonials-container');
+    if (testimonialsContainer) {
+        fetch('/data/testimonials.json')
+            .then(response => response.json())
+            .then(data => {
+                const testimonials = data.testimonials || [];
+                if (testimonials.length > 0) {
+                    renderRotatingTestimonials(testimonials, testimonialsContainer);
+                }
+            })
+            .catch(error => console.error('Error loading testimonials:', error));
+    }
+
+    function renderRotatingTestimonials(testimonials, container) {
+        container.innerHTML = '';
+        container.style.display = 'block'; // Override grid for a single rotator
+
+        const card = document.createElement('div');
+        card.className = 'testimonial-card rotator';
+        card.style.maxWidth = '800px';
+        card.style.margin = '0 auto';
+        card.style.textAlign = 'center';
+        card.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-out';
+
+        container.appendChild(card);
+
+        let currentIndex = 0;
+
+        function showTestimonial(index) {
+            const item = testimonials[index];
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(10px)';
+
+            setTimeout(() => {
+                card.innerHTML = `
+                    <p class="quote" style="font-size: 1.5rem;">"${item.quote}"</p>
+                    <div class="author" style="justify-content: center; margin-top: 1.5rem;">
+                        <h4>${item.author}</h4>
+                    </div>
+                `;
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 600);
+        }
+
+        showTestimonial(currentIndex);
+
+        if (testimonials.length > 1) {
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % testimonials.length;
+                showTestimonial(currentIndex);
+            }, 6000); // Rotate every 6 seconds
+        }
+    }
+
 });
