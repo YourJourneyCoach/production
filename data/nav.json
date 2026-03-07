@@ -17,7 +17,7 @@
       "url": "blog.html"
     },
     {
-      "visible": true,
+      "visible": false,
       "label": "Tools",
       "url": "tools.html"
     }
