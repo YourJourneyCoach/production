@@ -87,6 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
         card.style.maxWidth = '800px';
         card.style.margin = '0 auto';
         card.style.textAlign = 'center';
+        card.style.opacity = '0'; // Explicit initial state so Safari sees a real transition
+        card.style.transform = 'translateY(10px)';
         card.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-out';
 
         container.appendChild(card);
@@ -95,6 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function showTestimonial(index) {
             const item = testimonials[index];
+
+            // Fade out
             card.style.opacity = '0';
             card.style.transform = 'translateY(10px)';
 
@@ -105,12 +109,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h4>${item.author}</h4>
                     </div>
                 `;
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
+                // Double rAF: forces Safari to commit the opacity:0 paint BEFORE
+                // starting the fade-in transition. Without this, Safari collapses
+                // the 0→1 change into a single frame and the card stays invisible.
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    });
+                });
             }, 600);
         }
 
-        showTestimonial(currentIndex);
+        // Brief delay before first show so the browser paints the card at opacity:0
+        // before we start the animation cycle (required for Safari)
+        setTimeout(() => showTestimonial(currentIndex), 50);
 
         if (testimonials.length > 1) {
             setInterval(() => {
@@ -119,5 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 6000); // Rotate every 6 seconds
         }
     }
+
 
 });
