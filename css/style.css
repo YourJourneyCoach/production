@@ -448,9 +448,35 @@ ul {
 
 .author span {
     font-size: 0.85rem;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+}
+
+@keyframes rotatorFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rotatorFadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+color: var(--color-text-muted);
+text-transform: uppercase;
+letter-spacing: 1px;
 }
 
 /* Client Logos */

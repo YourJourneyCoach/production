@@ -87,9 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
         card.style.maxWidth = '800px';
         card.style.margin = '0 auto';
         card.style.textAlign = 'center';
-        card.style.opacity = '0'; // Explicit initial state so Safari sees a real transition
-        card.style.transform = 'translateY(10px)';
-        card.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-out';
+        // Safari safe: start completely hidden, rely strictly on CSS animations
+        card.style.opacity = '0';
 
         container.appendChild(card);
 
@@ -98,10 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
         function showTestimonial(index) {
             const item = testimonials[index];
 
-            // Fade out
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(10px)';
+            // 1. Trigger Fade Out (if it's already visible)
+            card.style.animation = 'rotatorFadeOut 0.6s ease-in forwards';
 
+            // 2. Wait for fade out to finish, then swap content and Fade In
             setTimeout(() => {
                 card.innerHTML = `
                     <p class="quote" style="font-size: 1.5rem;">"${item.quote}"</p>
@@ -109,20 +108,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h4>${item.author}</h4>
                     </div>
                 `;
-                // Double rAF: forces Safari to commit the opacity:0 paint BEFORE
-                // starting the fade-in transition. Without this, Safari collapses
-                // the 0→1 change into a single frame and the card stays invisible.
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    });
-                });
-            }, 600);
+
+                // Clear animation state and force reflow (fixes Safari caching render states)
+                card.style.animation = 'none';
+                void card.offsetWidth;
+
+                // Trigger Fade In
+                card.style.animation = 'rotatorFadeIn 0.6s ease-out forwards';
+            }, 600); // Wait 600ms for fade out
         }
 
-        // Brief delay before first show so the browser paints the card at opacity:0
-        // before we start the animation cycle (required for Safari)
+        // Brief delay before first show
         setTimeout(() => showTestimonial(currentIndex), 50);
 
         if (testimonials.length > 1) {
