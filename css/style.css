@@ -448,6 +448,9 @@ ul {
 
 .author span {
     font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 @keyframes rotatorFadeIn {
@@ -472,11 +475,6 @@ ul {
         opacity: 0;
         transform: translateY(10px);
     }
-}
-
-color: var(--color-text-muted);
-text-transform: uppercase;
-letter-spacing: 1px;
 }
 
 /* Client Logos */
