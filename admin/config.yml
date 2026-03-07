@@ -3,19 +3,9 @@ backend:
   branch: main # Branch to update (optional; defaults to master)
 
 media_folder: "assets/images" # Media files will be stored in the repo under assets/images
-public_folder: "assets/images" # The src attribute for uploaded media will begin with /assets/images
+public_folder: "/assets/images" # Absolute path so image URLs work correctly across all pages
 
 collections:
-  - name: "pages"
-    label: "Pages"
-    files:
-      - file: "index.html"
-        label: "Home Page"
-        name: "home"
-        fields:
-          - {label: "Title", name: "title", widget: "string"}
-          - {label: "Hero Heading", name: "hero_heading", widget: "string"}
-          - {label: "Hero Subheading", name: "hero_subheading", widget: "string"}
   - name: "testimonials"
     label: "Testimonials"
     files:

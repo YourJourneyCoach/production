@@ -51,15 +51,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. Navbar Scroll Effect (Light Theme)
     const navbar = document.querySelector('.navbar');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.style.background = 'rgba(253, 251, 247, 0.95)'; // Light cream
-            navbar.style.boxShadow = '0 5px 20px rgba(0,0,0,0.05)';
-        } else {
-            navbar.style.background = 'rgba(253, 251, 247, 0.8)';
-            navbar.style.boxShadow = 'none';
-        }
-    });
+    if (navbar) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(253, 251, 247, 0.95)'; // Light cream
+                navbar.style.boxShadow = '0 5px 20px rgba(0,0,0,0.05)';
+            } else {
+                navbar.style.background = 'rgba(253, 251, 247, 0.8)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+    }
+
 
     // 5. Dynamic Testimonials Rotation
     const testimonialsContainer = document.getElementById('testimonials-container');

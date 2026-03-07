@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Blog logic initialized');
-
     const blogListView = document.getElementById('blog-list-view');
     const singlePostView = document.getElementById('single-post-view');
     const blogGrid = document.getElementById('blog-grid');
@@ -14,52 +12,66 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let allPosts = [];
 
-    // Check if we are trying to load a specific post based on URL parameters
+    // --- Utility: Convert a post title into a stable URL slug ---
+    function toSlug(title) {
+        return (title || '')
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumerics with hyphens
+            .replace(/^-+|-+$/g, '');     // strip leading/trailing hyphens
+    }
+
+    // --- Utility: Find a post by slug ---
+    function findPostBySlug(slug) {
+        return allPosts.findIndex(p => toSlug(p.title) === slug);
+    }
+
+    // Check if we are loading a specific post from the URL
     const urlParams = new URLSearchParams(window.location.search);
-    const postIdStr = urlParams.get('id');
+    const slugFromUrl = urlParams.get('post');
 
     // Fetch posts
     fetch('/data/posts.json')
         .then(response => {
             if (!response.ok) {
-                throw new Error('Network response cannot be fetched. Assuming no posts yet.');
+                throw new Error('Could not load posts.');
             }
             return response.json();
         })
         .then(data => {
             allPosts = data.posts || [];
 
-            // Sort by date descending (newest first) if we want, but usually CMS list widget preserves order.
-            // Let's enforce sort just in case.
+            // Sort newest first
             allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            if (postIdStr !== null && !isNaN(parseInt(postIdStr))) {
-                // Show single post
-                const index = parseInt(postIdStr);
-                if (index >= 0 && index < allPosts.length) {
+            if (slugFromUrl) {
+                const index = findPostBySlug(slugFromUrl);
+                if (index !== -1) {
                     renderSinglePost(index);
                 } else {
-                    // Invalid ID, show list
-                    renderList();
+                    renderList(); // Slug not found, fall back to list
                 }
             } else {
-                // Show list
                 renderList();
             }
         })
         .catch(error => {
             console.error('Error fetching blog posts:', error);
-            blogGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center;">No posts available yet. Check back soon!</p>';
+            if (blogGrid) {
+                blogGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center;">No posts available yet. Check back soon!</p>';
+            }
         });
 
     function renderList() {
+        if (!blogListView || !singlePostView || !blogGrid) return;
+
         blogListView.style.display = 'block';
         singlePostView.style.display = 'none';
 
-        // Remove URL parameter purely for clean URL history
+        // Remove URL parameter for a clean URL
         window.history.replaceState({}, document.title, window.location.pathname);
 
-        blogGrid.innerHTML = ''; // Clear loading text
+        blogGrid.innerHTML = '';
 
         if (allPosts.length === 0) {
             blogGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center;">No posts available yet. Check back soon!</p>';
@@ -74,66 +86,68 @@ document.addEventListener('DOMContentLoaded', () => {
             const dateObj = new Date(post.date);
             const formattedDate = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-            // Generate card HTML
-            let html = `<span class="blog-date">${formattedDate}</span>
-                        <h3>${post.title}</h3>`;
+            // Use textContent for user-provided text to prevent XSS
+            const dateSpan = document.createElement('span');
+            dateSpan.className = 'blog-date';
+            dateSpan.textContent = formattedDate;
 
-            if (post.summary) {
-                html += `<p>${post.summary}</p>`;
-            } else {
-                // Generate a brief excerpt if no summary
-                const excerpt = post.body ? post.body.substring(0, 100) + '...' : '';
-                html += `<p>${excerpt}</p>`;
-            }
+            const titleEl = document.createElement('h3');
+            titleEl.textContent = post.title;
 
-            html += `<span class="read-more">Read Article &rarr;</span>`;
+            const summaryEl = document.createElement('p');
+            // Use summary if available, otherwise generate a plain-text excerpt from body
+            const summaryText = post.summary || (post.body ? post.body.replace(/[#*`_\[\]]/g, '').substring(0, 120) + '...' : '');
+            summaryEl.textContent = summaryText;
 
-            card.innerHTML = html;
+            const readMore = document.createElement('span');
+            readMore.className = 'read-more';
+            readMore.textContent = 'Read Article →';
 
-            // Click listener for routing
-            card.addEventListener('click', () => {
-                navigateToPost(index);
-            });
+            card.appendChild(dateSpan);
+            card.appendChild(titleEl);
+            card.appendChild(summaryEl);
+            card.appendChild(readMore);
 
+            card.addEventListener('click', () => navigateToPost(index));
             blogGrid.appendChild(card);
         });
 
-        // Trigger reveal observer manually if window isn't scrolled
+        // Trigger reveal animations
         setTimeout(() => {
-            document.querySelectorAll('.blog-card').forEach(el => el.classList.add('is-visible', 'fade-in-up'));
+            document.querySelectorAll('.blog-card').forEach(el => el.classList.add('is-visible'));
         }, 100);
     }
 
     function renderSinglePost(index) {
+        if (!blogListView || !singlePostView) return;
+
         const post = allPosts[index];
         blogListView.style.display = 'none';
         singlePostView.style.display = 'block';
 
         const dateObj = new Date(post.date);
         postDate.textContent = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-
         postTitle.textContent = post.title;
         postAuthor.textContent = post.author || 'Your Journey Coach';
 
-        // Use marked.js to parse the Markdown body into HTML
+        // Use marked.js to parse the Markdown body into HTML (safer than innerHTML with raw input)
         if (typeof marked !== 'undefined') {
             postContent.innerHTML = marked.parse(post.body || '');
         } else {
-            postContent.innerHTML = `<p>${post.body}</p>`;
-            console.warn('Marked.js not loaded. Displaying raw output.');
+            postContent.textContent = post.body || '';
+            console.warn('Marked.js not loaded. Displaying raw text.');
         }
 
-        // Setup back button
+        // Update the URL to a human-readable slug
+        const slug = toSlug(post.title);
+        const newUrl = window.location.pathname + '?post=' + slug;
+        window.history.pushState({ slug }, '', newUrl);
+
         backBtn.onclick = (e) => {
             e.preventDefault();
             renderList();
         };
 
-        // Update URL to match current post (allows sharing URLs)
-        const newUrl = window.location.pathname + '?id=' + index;
-        window.history.pushState({ path: newUrl }, '', newUrl);
-
-        // Scroll to top
         window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
@@ -142,18 +156,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Handle browser back/forward buttons
-    window.addEventListener('popstate', (e) => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const postIdStr = urlParams.get('id');
+    window.addEventListener('popstate', () => {
+        const params = new URLSearchParams(window.location.search);
+        const slug = params.get('post');
 
-        if (postIdStr !== null && !isNaN(parseInt(postIdStr))) {
-            const index = parseInt(postIdStr);
-            if (index >= 0 && index < allPosts.length) {
+        if (slug) {
+            const index = findPostBySlug(slug);
+            if (index !== -1) {
                 renderSinglePost(index);
+                return;
             }
-        } else {
-            renderList();
         }
+        renderList();
     });
 
 });
