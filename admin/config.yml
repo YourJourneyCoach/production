@@ -64,4 +64,20 @@ collections:
               - {label: "Author", name: "author", widget: "string", default: "John Paine"}
               - {label: "Featured Image", name: "image", widget: "image", required: false}
               - {label: "Summary", name: "summary", widget: "text", required: false}
-              - {label: "Body", name: "body", widget: "markdown"}
+  - name: "tools"
+    label: "Tools & Resources"
+    files:
+      - file: "data/tools.json"
+        label: "Resources List"
+        name: "tools_list"
+        fields:
+          - label: "Resources"
+            name: "resources"
+            widget: "list"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Category", name: "category", widget: "select", options: ["Enneagram", "Leadership", "General", "Books", "Podcasts"], default: "General"}
+              - {label: "Description", name: "description", widget: "string"}
+              - {label: "Resource Type", name: "type", widget: "select", options: ["File Upload", "Website Link"]}
+              - {label: "File Upload (PDF/Doc)", name: "file", widget: "file", required: false, hint: "Use this if the resource is a file they should download."}
+              - {label: "External URL (Website)", name: "external_url", widget: "string", required: false, hint: "Use this if the resource is a link to another site. Make sure to include https://"}

@@ -15,6 +15,11 @@
       "visible": false,
       "label": "blog",
       "url": "blog.html"
+    },
+    {
+      "visible": true,
+      "label": "Tools",
+      "url": "tools.html"
     }
   ],
   "cta_button": {
